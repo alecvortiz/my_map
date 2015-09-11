@@ -1,0 +1,74 @@
+<script src='https://api.tiles.mapbox.com/mapbox.js/v2.2.1/mapbox.js'></script>
+<link href='https://api.tiles.mapbox.com/mapbox.js/v2.2.1/mapbox.css' rel='stylesheet' />
+
+
+
+
+
+
+
+
+
+
+<div id="map"></div>
+<pre id='output' class='ui-output'></pre>
+
+<style>
+
+</style>
+
+
+<script>
+  L.mapbox.accessToken = 'pk.eyJ1IjoiYWxlY3ZvcnRpeiIsImEiOiJmMzQ2YTRlMzk3MzJiNjVkZTlhYWNjMDhkMzhjZGI2ZCJ9.APcWXJiLg_qKS79IZRuC0g';
+  var output = document.getElementById('output');
+
+//show latlng
+// var click = document.getElementById('click'),
+//     mousemove = document.getElementById('mousemove');
+
+
+
+  var map = L.mapbox.map('map', 'mapbox.streets') // default: map.streets
+      .setView([40, -74.50], 2); // ([coordinates], zoom level)
+
+      
+  var myLocations = L.mapbox.featureLayer()
+      .loadURL('/places.json') // example: /places.json
+      .addTo(map)
+
+var geocoderControl = L.mapbox.geocoderControl('mapbox.places');
+geocoderControl.addTo(map);
+
+// Listen for the `found` result and display the first result
+// in the output container. For all available events, see
+// https://www.mapbox.com/mapbox.js/api/v2.2.2/l-mapbox-geocodercontrol/#section-geocodercontrol-on
+geocoderControl.on('found', function(res) {
+    output.innerHTML = JSON.stringify(res.results.features[0]);
+});
+
+map.featureLayer.on('click', function(e) {
+        map.panTo(e.layer.getLatLng());
+    });
+
+map.on('click', function(ev) {
+	var x = ev.latlng.lat;
+	var y = ev.latlng.lng;
+
+	var marker = L.marker([x, y], {
+      icon: L.mapbox.marker.icon({
+        'marker-color': '#9c89cc'
+      }),
+      draggable: true
+    })
+    .addTo(map);
+});
+
+
+//latlng
+// map.on('mousemove click', function(e) {
+//     window[e.type].innerHTML = e.containerPoint.toString() + ', ' + e.latlng.toString();
+// });
+//
+
+
+</script>
